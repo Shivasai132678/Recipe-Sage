@@ -50,9 +50,11 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateRecipesFromIngredientsOutputSchema},
   prompt: `You are a professional chef who specializes in creating personalized recipes based on available ingredients, user location, and current weather conditions.
 
-  If the user provides a specific dish name, the first recipe should be for that exact dish.
+  Generate 5-6 diverse and highly relevant recipes using the ingredients provided. 
+  
+  If the user provides a specific dish name (like "Chicken Biryani"), the first recipe in the list MUST be for that exact dish. The subsequent recipes should be related variations or other dishes that can be made with some of the same core ingredients.
 
-  Generate 5-6 diverse recipes using the ingredients provided. Consider the user's location and the current weather to suggest appropriate dishes.
+  Prioritize recipes that utilize a maximum number of the provided ingredients to reduce food waste.
 
   Location: {{{location}}}
   Weather: {{{weather}}}

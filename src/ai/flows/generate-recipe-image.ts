@@ -36,7 +36,7 @@ const generateRecipeImageFlow = ai.defineFlow(
     try {
       const {media} = await ai.generate({
         model: googleAI.model('imagen-4.0-fast-generate-001'),
-        prompt: `A high-quality, professional photograph of ${input.recipeName}, ready for a food blog.`,
+        prompt: `A high-resolution, professionally shot food photograph of "${input.recipeName}". The image should be well-lit, appetizing, and styled for a top-tier food blog. The dish should be the clear focus, presented beautifully on appropriate tableware.`,
       });
       return {imageUrl: media.url};
     } catch (e) {
