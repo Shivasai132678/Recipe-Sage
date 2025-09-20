@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "1",
+      "description": "A delicious plate of spaghetti bolognese.",
+      "imageUrl": "https://picsum.photos/seed/recipesage1/600/400",
+      "imageHint": "pasta dish"
+    },
+    {
+      "id": "2",
+      "description": "A fresh and healthy garden salad.",
+      "imageUrl": "https://picsum.photos/seed/recipesage2/600/400",
+      "imageHint": "fresh salad"
+    },
+    {
+      "id": "3",
+      "description": "A savory chicken stir-fry with vegetables.",
+      "imageUrl": "https://picsum.photos/seed/recipesage3/600/400",
+      "imageHint": "chicken stir-fry"
+    },
+    {
+      "id": "4",
+      "description": "A warm bowl of tomato soup.",
+      "imageUrl": "https://picsum.photos/seed/recipesage4/600/400",
+      "imageHint": "tomato soup"
+    },
+    {
+      "id": "5",
+      "description": "A decadent chocolate lava cake.",
+      "imageUrl": "https://picsum.photos/seed/recipesage5/600/400",
+      "imageHint": "chocolate dessert"
+    },
+    {
+      "id": "6",
+      "description": "A generic placeholder for a generated recipe.",
+      "imageUrl": "https://picsum.photos/seed/recipesage6/600/400",
+      "imageHint": "cooked meal"
+    }
+  ]
 }
