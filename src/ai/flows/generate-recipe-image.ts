@@ -8,6 +8,7 @@
  */
 import {ai} from '@/ai/genkit';
 import {searchUnsplash} from '@/services/unsplash';
+import {searchGoogleImages} from '@/services/google-search';
 import {z} from 'genkit';
 
 const GenerateRecipeImageInputSchema = z.object({
@@ -33,19 +34,32 @@ const generateRecipeImageFlow = ai.defineFlow(
     outputSchema: GenerateRecipeImageOutputSchema,
   },
   async input => {
-    let imageUrl = `https://picsum.photos/seed/${input.recipeName.replace(
-      /\s+/g,
-      ''
-    )}/600/400`;
+    let imageUrl;
 
+    // 1. Try Google Custom Search first
     try {
-      const unsplashImage = await searchUnsplash(input.recipeName);
-      if (unsplashImage) {
-        imageUrl = unsplashImage;
-      }
+      imageUrl = await searchGoogleImages(input.recipeName);
     } catch (error) {
-      console.error('Error fetching image from Unsplash, using fallback.', error);
+      console.error('Error fetching image from Google Search.', error);
     }
+
+    // 2. Fallback to Unsplash if Google Search fails or returns no image
+    if (!imageUrl) {
+      try {
+        imageUrl = await searchUnsplash(input.recipeName);
+      } catch (error) {
+        console.error('Error fetching image from Unsplash.', error);
+      }
+    }
+    
+    // 3. Fallback to a generic placeholder if both fail
+    if (!imageUrl) {
+      imageUrl = `https://picsum.photos/seed/${input.recipeName.replace(
+        /\s+/g,
+        ''
+      )}/600/400`;
+    }
+
     return {
       imageUrl,
     };
