@@ -8,7 +8,6 @@
  */
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
 
 const GenerateRecipeImageInputSchema = z.object({
   recipeName: z.string().describe('The name of the recipe to generate an image for.'),
@@ -33,18 +32,10 @@ const generateRecipeImageFlow = ai.defineFlow(
     outputSchema: GenerateRecipeImageOutputSchema,
   },
   async input => {
-    try {
-      const {media} = await ai.generate({
-        model: googleAI.model('imagen-4.0-fast-generate-001'),
-        prompt: `A high-resolution, professionally shot food photograph of "${input.recipeName}". The image should be well-lit, appetizing, and styled for a top-tier food blog. The dish should be the clear focus, presented beautifully on appropriate tableware.`,
-      });
-      return {imageUrl: media.url};
-    } catch (e) {
-      console.error('Image generation failed, using placeholder', e);
-      const seed = Math.floor(Math.random() * 1000) + 1;
-      return {
-        imageUrl: `https://picsum.photos/seed/recipesage${seed}/600/400`,
-      };
-    }
+    // Create a seed from the recipe name to get a consistent image
+    const seed = input.recipeName.replace(/\s+/g, '');
+    return {
+      imageUrl: `https://picsum.photos/seed/${seed}/600/400`,
+    };
   }
 );
