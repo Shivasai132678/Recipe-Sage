@@ -7,6 +7,7 @@
  * - GenerateRecipeImageOutput - The return type for the generateRecipeImage function.
  */
 import {ai} from '@/ai/genkit';
+import {searchUnsplash} from '@/services/unsplash';
 import {z} from 'genkit';
 
 const GenerateRecipeImageInputSchema = z.object({
@@ -32,10 +33,21 @@ const generateRecipeImageFlow = ai.defineFlow(
     outputSchema: GenerateRecipeImageOutputSchema,
   },
   async input => {
-    // Create a seed from the recipe name to get a consistent image
-    const seed = input.recipeName.replace(/\s+/g, '');
+    let imageUrl = `https://picsum.photos/seed/${input.recipeName.replace(
+      /\s+/g,
+      ''
+    )}/600/400`;
+
+    try {
+      const unsplashImage = await searchUnsplash(input.recipeName);
+      if (unsplashImage) {
+        imageUrl = unsplashImage;
+      }
+    } catch (error) {
+      console.error('Error fetching image from Unsplash, using fallback.', error);
+    }
     return {
-      imageUrl: `https://picsum.photos/seed/${seed}/600/400`,
+      imageUrl,
     };
   }
 );
