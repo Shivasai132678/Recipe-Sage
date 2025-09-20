@@ -162,7 +162,7 @@ export default function RecipeSageApp() {
       <div>
         {isGenerating && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(3)].map((_, i) => (
+            {[...Array(6)].map((_, i) => (
               <div key={i} className="space-y-4 rounded-lg border p-4">
                 <Skeleton className="h-48 w-full" />
                 <Skeleton className="h-6 w-3/4" />
@@ -179,7 +179,7 @@ export default function RecipeSageApp() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recipes.map((recipe, index) => (
-                <RecipeCard key={index} recipe={recipe} onSelect={handleSelectRecipe} imageSeed={index + 1} />
+                <RecipeCard key={index} recipe={recipe} onSelect={handleSelectRecipe} />
               ))}
             </div>
           </>

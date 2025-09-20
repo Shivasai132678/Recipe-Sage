@@ -13,6 +13,7 @@ import {
   detectAllergensInRecipe,
   DetectAllergensInRecipeInput,
 } from '@/ai/flows/allergen-detection-in-recipes';
+import { generateRecipeImage, GenerateRecipeImageInput } from '@/ai/flows/generate-recipe-image';
 
 export async function handleRecognizeIngredients(input: RecognizeIngredientsFromImageInput) {
   try {
@@ -51,5 +52,15 @@ export async function handleDetectAllergens(input: DetectAllergensInRecipeInput)
   } catch (error) {
     console.error(error);
     return { success: false, error: 'Failed to detect allergens.' };
+  }
+}
+
+export async function handleGenerateRecipeImage(input: GenerateRecipeImageInput) {
+  try {
+    const result = await generateRecipeImage(input);
+    return { success: true, data: result };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to generate image.' };
   }
 }

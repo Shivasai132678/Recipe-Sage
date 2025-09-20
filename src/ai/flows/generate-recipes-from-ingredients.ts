@@ -10,12 +10,13 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {generateRecipeImage} from './generate-recipe-image';
 
 const GenerateRecipesFromIngredientsInputSchema = z.object({
   ingredients: z
     .string()
     .describe('A comma-separated list of ingredients to use in the recipe.'),
-  location: z.string().optional().describe('The user\u2019s location.'),
+  location: z.string().optional().describe('The user’s location.'),
   weather: z.string().optional().describe('The current weather conditions.'),
 });
 export type GenerateRecipesFromIngredientsInput = z.infer<
@@ -27,6 +28,7 @@ const RecipeSchema = z.object({
   ingredients: z.string().describe('A list of ingredients required for the recipe.'),
   instructions: z.string().describe('Step-by-step instructions for preparing the recipe.'),
   contextNotes: z.string().optional().describe('Additional notes or tips about the recipe.'),
+  imageUrl: z.string().optional().describe('URL of an image for the recipe.'),
 });
 
 const GenerateRecipesFromIngredientsOutputSchema = z.object({
@@ -48,7 +50,9 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateRecipesFromIngredientsOutputSchema},
   prompt: `You are a professional chef who specializes in creating personalized recipes based on available ingredients, user location, and current weather conditions.
 
-  Generate a few diverse recipes using the ingredients provided. Consider the user's location and the current weather to suggest appropriate dishes.
+  If the user provides a specific dish name, the first recipe should be for that exact dish.
+
+  Generate 5-6 diverse recipes using the ingredients provided. Consider the user's location and the current weather to suggest appropriate dishes.
 
   Location: {{{location}}}
   Weather: {{{weather}}}
@@ -65,6 +69,18 @@ const generateRecipesFromIngredientsFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    if (!output) {
+      return {recipes: []};
+    }
+    const imagePromises = output.recipes.map(recipe =>
+      generateRecipeImage({recipeName: recipe.name})
+    );
+    const images = await Promise.all(imagePromises);
+    const recipesWithImages = output.recipes.map((recipe, index) => ({
+      ...recipe,
+      imageUrl: images[index].imageUrl,
+    }));
+
+    return {recipes: recipesWithImages};
   }
 );

@@ -9,16 +9,16 @@ import { Eye } from 'lucide-react';
 interface RecipeCardProps {
   recipe: Recipe;
   onSelect: (recipe: Recipe) => void;
-  imageSeed: number;
 }
 
-export default function RecipeCard({ recipe, onSelect, imageSeed }: RecipeCardProps) {
+export default function RecipeCard({ recipe, onSelect }: RecipeCardProps) {
+  const imageUrl = recipe.imageUrl || `https://picsum.photos/seed/recipesage${Math.random()}/600/400`;
   return (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <CardHeader className="p-0">
         <div className="relative h-48 w-full">
           <Image
-            src={`https://picsum.photos/seed/recipesage${imageSeed}/600/400`}
+            src={imageUrl}
             alt={recipe.name}
             fill
             className="object-cover"

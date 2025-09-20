@@ -3,6 +3,7 @@ export type Recipe = {
   ingredients: string;
   instructions: string;
   contextNotes?: string;
+  imageUrl?: string;
 };
 
 export type NutritionFacts = {
