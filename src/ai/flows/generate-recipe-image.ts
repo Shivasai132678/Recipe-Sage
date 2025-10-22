@@ -10,6 +10,7 @@ import {ai} from '@/ai/genkit';
 import {searchUnsplash} from '@/services/unsplash';
 import {searchGoogleImages} from '@/services/google-search';
 import {z} from 'genkit';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const GenerateRecipeImageInputSchema = z.object({
   recipeName: z.string().describe('The name of the recipe to generate an image for.'),
@@ -17,7 +18,7 @@ const GenerateRecipeImageInputSchema = z.object({
 export type GenerateRecipeImageInput = z.infer<typeof GenerateRecipeImageInputSchema>;
 
 const GenerateRecipeImageOutputSchema = z.object({
-  imageUrl: z.string().describe('The data URI of the generated image.'),
+  imageUrl: z.string().describe('The URL of the generated image.'),
 });
 export type GenerateRecipeImageOutput = z.infer<typeof GenerateRecipeImageOutputSchema>;
 
@@ -36,28 +37,27 @@ const generateRecipeImageFlow = ai.defineFlow(
   async input => {
     let imageUrl;
 
-    // 1. Try Google Custom Search first
+    // 1. Try Unsplash first as it's free and has high-quality images.
     try {
-      imageUrl = await searchGoogleImages(input.recipeName);
+      imageUrl = await searchUnsplash(input.recipeName);
     } catch (error) {
-      console.error('Error fetching image from Google Search.', error);
+      console.error('Error fetching image from Unsplash.', error);
     }
 
-    // 2. Fallback to Unsplash if Google Search fails or returns no image
+    // 2. Fallback to Google Custom Search if Unsplash fails or returns no image.
     if (!imageUrl) {
       try {
-        imageUrl = await searchUnsplash(input.recipeName);
+        imageUrl = await searchGoogleImages(input.recipeName);
       } catch (error) {
-        console.error('Error fetching image from Unsplash.', error);
+        console.error('Error fetching image from Google Search.', error);
       }
     }
     
-    // 3. Fallback to a generic placeholder if both fail
+    // 3. Fallback to a generic food placeholder if both APIs fail.
     if (!imageUrl) {
-      imageUrl = `https://picsum.photos/seed/${input.recipeName.replace(
-        /\s+/g,
-        ''
-      )}/600/400`;
+      // Use the placeholder image with hint "cooked meal"
+      const placeholder = PlaceHolderImages.find(p => p.imageHint === 'cooked meal');
+      imageUrl = placeholder ? placeholder.imageUrl : 'https://picsum.photos/seed/recipesage6/600/400';
     }
 
     return {

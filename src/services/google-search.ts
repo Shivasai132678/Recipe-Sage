@@ -17,7 +17,7 @@ export async function searchGoogleImages(query: string): Promise<string | null> 
   }
 
   const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(
-    query + ' food'
+    query + ' food recipe'
   )}&searchType=image&num=1&key=${apiKey}&cx=${cx}&imgSize=large`;
 
   try {
