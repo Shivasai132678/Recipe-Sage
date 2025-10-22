@@ -37,19 +37,19 @@ const generateRecipeImageFlow = ai.defineFlow(
   async input => {
     let imageUrl;
 
-    // 1. Try Unsplash first as it's free and has high-quality images.
+    // 1. Try Google Custom Search first for the most relevant images.
     try {
-      imageUrl = await searchUnsplash(input.recipeName);
+      imageUrl = await searchGoogleImages(input.recipeName);
     } catch (error) {
-      console.error('Error fetching image from Unsplash.', error);
+      console.error('Error fetching image from Google Search.', error);
     }
 
-    // 2. Fallback to Google Custom Search if Unsplash fails or returns no image.
+    // 2. Fallback to Unsplash if Google Search fails or returns no image.
     if (!imageUrl) {
       try {
-        imageUrl = await searchGoogleImages(input.recipeName);
+        imageUrl = await searchUnsplash(input.recipeName);
       } catch (error) {
-        console.error('Error fetching image from Google Search.', error);
+        console.error('Error fetching image from Unsplash.', error);
       }
     }
     
