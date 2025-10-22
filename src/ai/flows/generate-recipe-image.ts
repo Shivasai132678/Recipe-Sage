@@ -36,20 +36,21 @@ const generateRecipeImageFlow = ai.defineFlow(
   },
   async input => {
     let imageUrl;
+    const query = `${input.recipeName} food photography`;
 
     // 1. Try Google Custom Search first for the most relevant images.
     try {
-      imageUrl = await searchGoogleImages(input.recipeName);
+      imageUrl = await searchGoogleImages(query);
     } catch (error) {
-      console.error('Error fetching image from Google Search.', error);
+      console.error('Error fetching image from Google Search:', error);
     }
 
     // 2. Fallback to Unsplash if Google Search fails or returns no image.
     if (!imageUrl) {
       try {
-        imageUrl = await searchUnsplash(input.recipeName);
+        imageUrl = await searchUnsplash(query);
       } catch (error) {
-        console.error('Error fetching image from Unsplash.', error);
+        console.error('Error fetching image from Unsplash:', error);
       }
     }
     
@@ -57,7 +58,8 @@ const generateRecipeImageFlow = ai.defineFlow(
     if (!imageUrl) {
       // Use the placeholder image with hint "cooked meal"
       const placeholder = PlaceHolderImages.find(p => p.imageHint === 'cooked meal');
-      imageUrl = placeholder ? placeholder.imageUrl : 'https://picsum.photos/seed/recipesage6/600/400';
+      imageUrl = placeholder ? placeholder.imageUrl : 'https://picsum.photos/seed/recipesage6/600/400'; // Final fallback
+      console.error('All image services failed. Using placeholder image.');
     }
 
     return {
